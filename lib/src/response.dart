@@ -1,3 +1,4 @@
+import 'package:aria2_api/src/_internal.dart';
 import 'package:aria2_api/src/enum.dart';
 import 'package:aria2_api/src/error.dart';
 import 'package:aria2_api/src/helper.dart';
@@ -39,7 +40,7 @@ class Aria2MultiCallResponse {
   ) {
     final id = json['id']?.toString();
     if (id == null) {
-      throw const FormatException('Missing "id" field in JSON');
+      throw const FormatException(missingIdMessage);
     }
 
     return switch (json) {
@@ -48,7 +49,7 @@ class Aria2MultiCallResponse {
         id: id,
         result: Aria2Error.fromJson(errorData).toFailure(),
       ),
-      _ => throw FormatException('Invalid Aria2 response structure', json),
+      _ => throw FormatException(invalidJsonMessage, json),
     };
   }
 
@@ -85,7 +86,7 @@ class Aria2MultiCallResponse {
           value.map((inner) => buildInner(key, inner)).toList().toSuccess(),
         );
       } else {
-        throw FormatException('Invalid Aria2 response structure', value);
+        throw FormatException(invalidJsonMessage, value);
       }
     }
 
@@ -112,7 +113,7 @@ class Aria2Response<T extends Aria2Result> extends Aria2ResponseBase<T> {
   ) {
     final id = json['id']?.toString();
     if (id == null) {
-      throw const FormatException('Missing "id" field in JSON');
+      throw const FormatException(missingIdMessage);
     }
 
     return switch (json) {
@@ -121,7 +122,7 @@ class Aria2Response<T extends Aria2Result> extends Aria2ResponseBase<T> {
         id: id,
         result: Aria2Error.fromJson(errorData).toFailure(),
       ),
-      _ => throw FormatException('Invalid Aria2 response structure', json),
+      _ => throw FormatException(invalidJsonMessage, json),
     };
   }
 
@@ -131,14 +132,11 @@ class Aria2Response<T extends Aria2Result> extends Aria2ResponseBase<T> {
     dynamic data,
   ) {
     final builtData = Aria2Result.build(method, data);
-
     if (builtData is T) {
       return Aria2Response(id: id, result: builtData.toSuccess());
     }
 
-    throw Exception(
-      'Type mismatch: Expected $T, but got ${builtData.runtimeType}.',
-    );
+    throw Exception(typeMismatchMessage(T, builtData));
   }
 }
 
@@ -156,7 +154,7 @@ class Aria2ListResponse<T extends Aria2Result>
   ) {
     final id = json['id']?.toString();
     if (id == null) {
-      throw const FormatException('Missing "id" field in JSON');
+      throw const FormatException(missingIdMessage);
     }
 
     return switch (json) {
@@ -165,7 +163,7 @@ class Aria2ListResponse<T extends Aria2Result>
         id: id,
         result: Aria2Error.fromJson(errorData).toFailure(),
       ),
-      _ => throw FormatException('Invalid Aria2 response structure', json),
+      _ => throw FormatException(invalidJsonMessage, json),
     };
   }
 
@@ -177,11 +175,11 @@ class Aria2ListResponse<T extends Aria2Result>
     final builtData = <T>[];
     for (final i in data) {
       final result = Aria2Result.build(method, i);
-      assert(
-        result is T,
-        'Type mismatch: Expected $T, but got ${builtData.runtimeType}.',
-      );
-      builtData.add(result as T);
+      if (result is T) {
+        builtData.add(result);
+      } else {
+        throw Exception(typeMismatchMessage(T, result));
+      }
     }
 
     return Aria2ListResponse(id: id, result: builtData.cast<T>().toSuccess());
@@ -189,54 +187,28 @@ class Aria2ListResponse<T extends Aria2Result>
 }
 
 class Aria2Notification {
-  final String jsonrpc;
   final Aria2NotificationName method;
-  final Aria2NotificationList data;
+  final List<Aria2NotificationObject> data;
 
-  const Aria2Notification({
-    required this.jsonrpc,
-    required this.method,
-    required this.data,
-  });
+  const Aria2Notification({required this.method, required this.data});
 
   factory Aria2Notification.fromJson(Map<String, dynamic> json) {
     if (json.containsKey('method') && json.containsKey('params')) {
+      final data = json['params'] as List<Map<String, dynamic>>;
       return Aria2Notification(
-        jsonrpc: json['jsonrpc'] ?? '2.0',
         method: Aria2NotificationName.values.byAlias(json['method']),
-        data: Aria2NotificationList.build(json['params']),
+        data: data.map((e) => Aria2NotificationObject.fromJson(e)).toList(),
       );
     }
 
-    throw FormatException('Wrong json data.', json);
+    throw FormatException(invalidJsonMessage, json);
   }
 
   @override
   String toString() {
-    return (StringBuffer('$runtimeType(')
-          ..writeAll([
-            'jsonrpc: $jsonrpc',
-            'method: $method',
-            'data: $data',
-          ], ', ')
+    return (StringBuffer('Aria2Notification(')
+          ..writeAll(['method: $method', 'data: $data'], ', ')
           ..write(')'))
         .toString();
-  }
-}
-
-class Aria2NotificationList {
-  final List<Aria2NotificationObject> value;
-
-  const Aria2NotificationList(this.value);
-
-  factory Aria2NotificationList.build(List json) {
-    return Aria2NotificationList(
-      json.map((e) => Aria2NotificationObject.fromJson(e)).toList(),
-    );
-  }
-
-  @override
-  String toString() {
-    return value.toString();
   }
 }

@@ -1042,7 +1042,7 @@ void main() {
       final storage = <String>[];
       final subscription = client.notification.listen((e) {
         if (e.method == Aria2NotificationName.onDownloadStart) {
-          final list = e.data.value.map((f) => f.gid).toList();
+          final list = e.data.map((f) => f.gid).toList();
           storage.addAll(list);
         }
       });
@@ -1061,7 +1061,7 @@ void main() {
       final storage = <String>[];
       final subscription = client.notification.listen((e) {
         if (e.method == Aria2NotificationName.onDownloadPause) {
-          final list = e.data.value.map((f) => f.gid).toList();
+          final list = e.data.map((f) => f.gid).toList();
           storage.addAll(list);
         }
       });
@@ -1084,7 +1084,7 @@ void main() {
       final storage = <String>[];
       final subscription = client.notification.listen((e) {
         if (e.method == Aria2NotificationName.onDownloadStop) {
-          final list = e.data.value.map((f) => f.gid).toList();
+          final list = e.data.map((f) => f.gid).toList();
           storage.addAll(list);
         }
       });
@@ -1107,7 +1107,7 @@ void main() {
       final completer = Completer<void>();
       String? addGid;
       final subscription = client.notification.listen((e) {
-        final list = e.data.value.map((f) => f.gid).toList();
+        final list = e.data.map((f) => f.gid).toList();
         if (addGid == null || !list.contains(addGid)) return;
         if (e.method == Aria2NotificationName.onDownloadComplete) {
           if (!completer.isCompleted) completer.complete();
@@ -1131,7 +1131,7 @@ void main() {
       final completer = Completer<void>();
       String? addGid;
       final subscription = client.notification.listen((e) {
-        final list = e.data.value.map((f) => f.gid).toList();
+        final list = e.data.map((f) => f.gid).toList();
         if (addGid == null || !list.contains(addGid)) return;
         if (e.method == Aria2NotificationName.onDownloadError) {
           if (!completer.isCompleted) completer.complete();

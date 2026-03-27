@@ -1,3 +1,4 @@
+import 'package:aria2_api/src/_internal.dart';
 import 'package:aria2_api/src/enum.dart';
 import 'package:aria2_api/src/helper.dart';
 import 'package:aria2_api/src/struct.dart';
@@ -579,7 +580,7 @@ sealed class Aria2ObjectResult extends Aria2Result {
       return Aria2OptionObject.fromJson(json);
     }
 
-    throw FormatException('Wrong json data.', json);
+    throw FormatException(invalidJsonMessage, json);
   }
 }
 
@@ -1572,7 +1573,7 @@ sealed class Aria2Result {
         }
         return Aria2ObjectResult.build(e);
     }
-    throw FormatException('Invalid Aria2 result structure', json);
+    throw FormatException(invalidJsonMessage, json);
   }
 }
 

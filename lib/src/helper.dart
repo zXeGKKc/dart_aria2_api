@@ -12,11 +12,27 @@ extension Aria2BatchCallHelper on ResultDart<Object, Aria2Error> {
     return null;
   }
 
+  List<T>? castListOrThrow<T extends Aria2Result>() {
+    final result = getOrNull();
+    if (result is List) {
+      return result.cast<T>();
+    }
+    throw Exception(typeMismatchMessage(List<T>, result));
+  }
+
   T? castOrNull<T extends Aria2Result>() {
     final result = getOrNull();
     return switch (result) {
       T t => t,
       _ => null,
+    };
+  }
+
+  T castOrThrow<T extends Aria2Result>() {
+    final result = getOrNull();
+    return switch (result) {
+      T t => t,
+      _ => throw Exception(typeMismatchMessage(T, result)),
     };
   }
 }
@@ -30,11 +46,27 @@ extension Aria2MultiCallHelper on ResultDart<List, Aria2Error> {
     return null;
   }
 
+  List<T>? castListOrThrow<T extends Object>() {
+    final result = getOrNull()?.first;
+    if (result is List) {
+      return result.cast<T>();
+    }
+    throw Exception(typeMismatchMessage(List<T>, result));
+  }
+
   T? castOrNull<T extends Object>() {
     final result = getOrNull()?.first;
     return switch (result) {
       T t => t,
       _ => null,
+    };
+  }
+
+  T castOrThrow<T extends Object>() {
+    final result = getOrNull()?.first;
+    return switch (result) {
+      T t => t,
+      _ => throw Exception(typeMismatchMessage(T, result)),
     };
   }
 }

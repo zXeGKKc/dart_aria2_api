@@ -422,7 +422,7 @@ void main() {
       ];
 
       final multi = await client.multicall(methods);
-      final result = multi.getOrNull()?.responses;
+      final result = multi.getOrNull()?.result.getOrNull();
       expect(result, allOf(isNotNull, hasLength(methods.length)));
       final responses = result!;
 
@@ -905,7 +905,7 @@ void main() {
       ];
 
       final multi = await client.multicall(methods);
-      final result = multi.getOrNull()?.responses;
+      final result = multi.getOrNull()?.result.getOrNull();
       expect(result, allOf(isNotNull, hasLength(methods.length)));
       final responses = result!;
 

@@ -2,9 +2,6 @@ import 'package:aria2_api/src/_internal.dart';
 import 'package:aria2_api/src/enum.dart';
 import 'package:aria2_api/src/helper.dart';
 import 'package:aria2_api/src/struct.dart';
-import 'package:collection/collection.dart';
-
-const _keyMatcher = SetEquality<String>();
 
 T? _buildConversion<T>(dynamic value, T Function(dynamic) converter) {
   return value != null ? converter(value) : null;
@@ -40,6 +37,22 @@ class Aria2DownloadingFileObject extends Aria2ObjectResult {
       );
 
   @override
+  int get hashCode =>
+      Object.hashAll([index, path, length, completedLength, selected, uris]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2DownloadingFileObject &&
+            index == other.index &&
+            path == other.path &&
+            length == other.length &&
+            completedLength == other.completedLength &&
+            selected == other.selected &&
+            listEquality.equals(uris, other.uris));
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..writeAll([
@@ -55,7 +68,7 @@ class Aria2DownloadingFileObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {
+    return setEquality.equals(keySet, const {
       'index',
       'path',
       'length',
@@ -103,6 +116,32 @@ class Aria2DownloadingPeerObject extends Aria2ObjectResult {
       );
 
   @override
+  int get hashCode => Object.hashAll([
+    peerId,
+    ip,
+    bitfield,
+    amChoking,
+    peerChoking,
+    downloadSpeed,
+    uploadSpeed,
+    seeder,
+  ]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2DownloadingPeerObject &&
+            peerId == other.peerId &&
+            ip == other.ip &&
+            bitfield == other.bitfield &&
+            amChoking == other.amChoking &&
+            peerChoking == other.peerChoking &&
+            downloadSpeed == other.downloadSpeed &&
+            uploadSpeed == other.uploadSpeed &&
+            seeder == other.seeder);
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..writeAll([
@@ -120,7 +159,7 @@ class Aria2DownloadingPeerObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {
+    return setEquality.equals(keySet, const {
       'peerId',
       'ip',
       'bitfield',
@@ -268,7 +307,7 @@ class Aria2DownloadingStatusObject extends Aria2ObjectResult {
     verifyIntegrityPending,
   ]);
 
-  Map<String, dynamic> get jsonMap {
+  Map<String, dynamic> get parametrized {
     final result = <String, dynamic>{};
 
     if (gid != null) result['gid'] = gid;
@@ -303,37 +342,41 @@ class Aria2DownloadingStatusObject extends Aria2ObjectResult {
 
   @override
   bool operator ==(Object other) {
-    return other is Aria2DownloadingStatusObject &&
-        other.gid == gid &&
-        other.status == status &&
-        other.totalLength == totalLength &&
-        other.completedLength == completedLength &&
-        other.uploadLength == uploadLength &&
-        other.bitfield == bitfield &&
-        other.downloadSpeed == downloadSpeed &&
-        other.uploadSpeed == uploadSpeed &&
-        other.infoHash == infoHash &&
-        other.numSeeders == numSeeders &&
-        other.seeder == seeder &&
-        other.pieceLength == pieceLength &&
-        other.numPieces == numPieces &&
-        other.connections == connections &&
-        other.errorCode == errorCode &&
-        other.errorMessage == errorMessage &&
-        other.followedBy == followedBy &&
-        other.following == following &&
-        other.belongsTo == belongsTo &&
-        other.dir == dir &&
-        other.files == files &&
-        other.bittorrent == bittorrent &&
-        other.verifiedLength == verifiedLength &&
-        other.verifyIntegrityPending == verifyIntegrityPending;
+    return identical(this, other) ||
+        (other is Aria2DownloadingStatusObject &&
+            other.gid == gid &&
+            other.status == status &&
+            other.totalLength == totalLength &&
+            other.completedLength == completedLength &&
+            other.uploadLength == uploadLength &&
+            other.bitfield == bitfield &&
+            other.downloadSpeed == downloadSpeed &&
+            other.uploadSpeed == uploadSpeed &&
+            other.infoHash == infoHash &&
+            other.numSeeders == numSeeders &&
+            other.seeder == seeder &&
+            other.pieceLength == pieceLength &&
+            other.numPieces == numPieces &&
+            other.connections == connections &&
+            other.errorCode == errorCode &&
+            other.errorMessage == errorMessage &&
+            other.followedBy == followedBy &&
+            other.following == following &&
+            other.belongsTo == belongsTo &&
+            other.dir == dir &&
+            other.files == files &&
+            other.bittorrent == bittorrent &&
+            other.verifiedLength == verifiedLength &&
+            other.verifyIntegrityPending == verifyIntegrityPending);
   }
 
   @override
   String toString() {
     return (StringBuffer('$runtimeType(')
-          ..writeAll(jsonMap.entries.map((e) => '${e.key}: ${e.value}'), ', ')
+          ..writeAll(
+            parametrized.entries.map((e) => '${e.key}: ${e.value}'),
+            ', ',
+          )
           ..write(')'))
         .toString();
   }
@@ -439,6 +482,17 @@ class Aria2DownloadingUriObject extends Aria2ObjectResult {
       );
 
   @override
+  int get hashCode => Object.hashAll([uri, status]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2DownloadingUriObject &&
+            uri == other.uri &&
+            status == other.status);
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..writeAll(['uri: $uri', 'status: $status'], ', ')
@@ -447,7 +501,7 @@ class Aria2DownloadingUriObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {'uri', 'status'});
+    return setEquality.equals(keySet, const {'uri', 'status'});
   }
 }
 
@@ -479,6 +533,28 @@ class Aria2GlobalStatObject extends Aria2ObjectResult {
       );
 
   @override
+  int get hashCode => Object.hashAll([
+    downloadSpeed,
+    uploadSpeed,
+    numActive,
+    numWaiting,
+    numStopped,
+    numStoppedTotal,
+  ]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2GlobalStatObject &&
+            other.downloadSpeed == downloadSpeed &&
+            other.uploadSpeed == uploadSpeed &&
+            other.numActive == numActive &&
+            other.numWaiting == numWaiting &&
+            other.numStopped == numStopped &&
+            other.numStoppedTotal == numStoppedTotal);
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..writeAll([
@@ -494,7 +570,7 @@ class Aria2GlobalStatObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {
+    return setEquality.equals(keySet, const {
       'downloadSpeed',
       'uploadSpeed',
       'numActive',
@@ -509,6 +585,15 @@ class Aria2IntegerResult extends Aria2Result {
   final int value;
 
   const Aria2IntegerResult(this.value);
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2IntegerResult && value == other.value);
+  }
 
   @override
   String toString() {
@@ -531,6 +616,17 @@ class Aria2LinkedServerObject extends Aria2ObjectResult {
       );
 
   @override
+  int get hashCode => Object.hashAll([index, servers]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2LinkedServerObject &&
+            index == other.index &&
+            listEquality.equals(servers, other.servers));
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..writeAll(['index: $index', 'servers: $servers'], ', ')
@@ -539,7 +635,33 @@ class Aria2LinkedServerObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {'index', 'servers'});
+    return setEquality.equals(keySet, const {'index', 'servers'});
+  }
+}
+
+class Aria2NotificationObject {
+  final String gid;
+
+  Aria2NotificationObject({required this.gid});
+
+  Aria2NotificationObject.fromJson(Map<String, dynamic> json)
+    : this(gid: json['gid']);
+
+  @override
+  int get hashCode => gid.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2NotificationObject && gid == other.gid);
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('$runtimeType(')
+          ..write('gid: $gid')
+          ..write(')'))
+        .toString();
   }
 }
 
@@ -1195,6 +1317,23 @@ class Aria2OptionObject extends Aria2InputFileOption
   });
 
   @override
+  int get hashCode => Object.hashAll([
+    super.hashCode,
+    btMaxOpenFiles,
+    downloadResult,
+    keepUnfinishedDownloadResult,
+    log,
+    logLevel,
+    maxConcurrentDownloads,
+    maxDownloadResult,
+    maxOverallDownloadLimit,
+    maxOverallUploadLimit,
+    saveCookies,
+    saveSession,
+    serverStatOf,
+  ]);
+
+  @override
   Map<String, dynamic> get parametrized {
     final result = <String, dynamic>{};
 
@@ -1419,6 +1558,27 @@ class Aria2OptionObject extends Aria2InputFileOption
     return result;
   }
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (super == other &&
+            other is Aria2OptionObject &&
+            btMaxOpenFiles == other.btMaxOpenFiles &&
+            downloadResult == other.downloadResult &&
+            keepUnfinishedDownloadResult ==
+                other.keepUnfinishedDownloadResult &&
+            log == other.log &&
+            logLevel == other.logLevel &&
+            maxConcurrentDownloads == other.maxConcurrentDownloads &&
+            maxDownloadResult == other.maxDownloadResult &&
+            maxOverallDownloadLimit == other.maxOverallDownloadLimit &&
+            maxOverallUploadLimit == other.maxOverallUploadLimit &&
+            optimizeConcurrentDownloads == other.optimizeConcurrentDownloads &&
+            saveCookies == other.saveCookies &&
+            saveSession == other.saveSession &&
+            serverStatOf == other.serverStatOf);
+  }
+
   static bool _anyKeyMatch(Set<String> keySet) {
     return keySet.any(
       (e) => const {
@@ -1573,6 +1733,7 @@ sealed class Aria2Result {
         }
         return Aria2ObjectResult.build(e);
     }
+
     throw FormatException(invalidJsonMessage, json);
   }
 }
@@ -1586,6 +1747,15 @@ class Aria2SessionInfoObject extends Aria2ObjectResult {
     : this(sessionId: json['sessionId']);
 
   @override
+  int get hashCode => sessionId.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2SessionInfoObject && sessionId == other.sessionId);
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..write('sessionId: $sessionId')
@@ -1594,7 +1764,7 @@ class Aria2SessionInfoObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {'sessionId'});
+    return setEquality.equals(keySet, const {'sessionId'});
   }
 }
 
@@ -1602,6 +1772,15 @@ class Aria2StringResult extends Aria2Result {
   final String value;
 
   const Aria2StringResult(this.value);
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2StringResult && value == other.value);
+  }
 
   @override
   String toString() {
@@ -1625,6 +1804,17 @@ class Aria2VersionObject extends Aria2ObjectResult {
       );
 
   @override
+  int get hashCode => Object.hashAll([version, enabledFeatures]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2VersionObject &&
+            version == other.version &&
+            listEquality.equals(enabledFeatures, enabledFeatures));
+  }
+
+  @override
   String toString() {
     return (StringBuffer('$runtimeType(')
           ..writeAll([
@@ -1636,23 +1826,6 @@ class Aria2VersionObject extends Aria2ObjectResult {
   }
 
   static bool _keyMatch(Set<String> keySet) {
-    return _keyMatcher.equals(keySet, const {'version', 'enabledFeatures'});
-  }
-}
-
-class Aria2NotificationObject {
-  final String gid;
-
-  Aria2NotificationObject({required this.gid});
-
-  Aria2NotificationObject.fromJson(Map<String, dynamic> json)
-    : this(gid: json['gid']);
-
-  @override
-  String toString() {
-    return (StringBuffer('$runtimeType(')
-          ..write('gid: $gid')
-          ..write(')'))
-        .toString();
+    return setEquality.equals(keySet, const {'version', 'enabledFeatures'});
   }
 }

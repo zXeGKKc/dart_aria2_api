@@ -8,6 +8,15 @@ class Aria2Error {
     : this(code: json['code'], message: json['message']);
 
   @override
+  int get hashCode => Object.hashAll([code, message]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2Error && code == other.code && message == other.message);
+  }
+
+  @override
   String toString() {
     return (StringBuffer('Aria2Error(')
           ..writeAll(['code: $code', 'message: $message'], ', ')

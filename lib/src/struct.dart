@@ -1,3 +1,4 @@
+import 'package:aria2_api/src/_internal.dart';
 import 'package:aria2_api/src/enum.dart';
 import 'package:aria2_api/src/helper.dart';
 
@@ -24,6 +25,21 @@ class Aria2BitTorrentData {
         mode: Aria2BitTorrentMode.values.byName(map['mode']),
         info: Aria2BitTorrentInfo.fromMap(map['info']),
       );
+
+  @override
+  int get hashCode =>
+      Object.hashAll([announceList, comment, creationDate, mode, info]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2BitTorrentData &&
+            listEquality.equals(announceList, other.announceList) &&
+            comment == other.comment &&
+            creationDate == other.creationDate &&
+            mode == other.mode &&
+            info == other.info);
+  }
 }
 
 class Aria2BitTorrentInfo {
@@ -33,6 +49,15 @@ class Aria2BitTorrentInfo {
 
   Aria2BitTorrentInfo.fromMap(Map<String, dynamic> map)
     : this(name: map['name']);
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2BitTorrentInfo && name == other.name);
+  }
 }
 
 class Aria2BtPrioritizePieceOption {
@@ -54,6 +79,17 @@ class Aria2BtPrioritizePieceOption {
     if (tail != null) result.write('=$tail');
 
     return result.toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([head, tail]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2BtPrioritizePieceOption &&
+            head == other.head &&
+            tail == other.tail);
   }
 }
 
@@ -78,6 +114,15 @@ class Aria2ConcurrentOptimizer {
   String toString() {
     return value.toString();
   }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2ConcurrentOptimizer && value == other.value);
+  }
 }
 
 class Aria2HashOption {
@@ -95,6 +140,17 @@ class Aria2HashOption {
   @override
   String toString() {
     return '${type.name}=$digest';
+  }
+
+  @override
+  int get hashCode => Object.hashAll([type, digest]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2HashOption &&
+            type == other.type &&
+            digest == other.digest);
   }
 }
 
@@ -1113,7 +1169,7 @@ class Aria2InputFileOption {
     if (selectFile != null) result['select-file'] = selectFile;
     if (split != null) result['split'] = split;
     if (sshHostKeyMd != null) {
-      result['ssh-host-key-md'] = sshHostKeyMd!.toString();
+      result['ssh-host-key-md'] = sshHostKeyMd.toString();
     }
     if (streamPieceSelector != null) {
       result['stream-piece-selector'] = streamPieceSelector!.alias;
@@ -1136,6 +1192,238 @@ class Aria2InputFileOption {
           ..write(')'))
         .toString();
   }
+
+  @override
+  int get hashCode => Object.hashAll([
+    allProxy,
+    allProxyPasswd,
+    allProxyUser,
+    allowOverwrite,
+    allowPieceLengthChange,
+    alwaysResume,
+    asyncDns,
+    autoFileRenaming,
+    btEnableHookAfterHashCheck,
+    btEnableLpd,
+    btExcludeTracker,
+    btExternalIP,
+    btForceEncryption,
+    btHashCheckSeed,
+    btLoadSavedMetadata,
+    btMaxPeers,
+    btMetadataOnly,
+    btMinCryptoLevel,
+    btPrioritizePiece,
+    btRemoveUnselectedFile,
+    btRequestPeerSpeedLimit,
+    btRequireCrypto,
+    btSaveMetadata,
+    btSeedUnverified,
+    btStopTimeout,
+    btTracker,
+    btTrackerConnectTimeout,
+    btTrackerInterval,
+    btTrackerTimeout,
+    checkIntegrity,
+    checksum,
+    conditionalGet,
+    connectTimeout,
+    contentDispositionDefaultUtf8,
+    aria2Continue,
+    dir,
+    dryRun,
+    enableHttpKeepAlive,
+    enableHttpPipelining,
+    enableMmap,
+    enablePeerExchange,
+    fileAllocation,
+    followMetalink,
+    followTorrent,
+    forceSave,
+    ftpPasswd,
+    ftpPasv,
+    ftpProxy,
+    ftpProxyPasswd,
+    ftpProxyUser,
+    ftpReuseConnection,
+    ftpType,
+    ftpUser,
+    gid,
+    hashCheckOnly,
+    header,
+    httpAcceptGzip,
+    httpAuthChallenge,
+    httpNoCache,
+    httpPasswd,
+    httpProxy,
+    httpProxyPasswd,
+    httpProxyUser,
+    httpUser,
+    httpsProxy,
+    httpsProxyPasswd,
+    httpsProxyUser,
+    indexOut,
+    lowestSpeedLimit,
+    maxConnectionPerServer,
+    maxDownloadLimit,
+    maxFileNotFound,
+    maxMmapLimit,
+    maxResumeFailureTries,
+    maxTries,
+    maxUploadLimit,
+    metalinkBaseUri,
+    metalinkEnableUniqueProtocol,
+    metalinkLanguage,
+    metalinkLocation,
+    metalinkOS,
+    metalinkPreferredProtocol,
+    metalinkVersion,
+    minSplitSize,
+    noFileAllocationLimit,
+    noNetrc,
+    noProxy,
+    out,
+    parameterizedUri,
+    pause,
+    pauseMetadata,
+    pieceLength,
+    proxyMethod,
+    realtimeChunkChecksum,
+    referer,
+    remoteTime,
+    removeControlFile,
+    retryWait,
+    reuseUri,
+    rpcSaveUploadMetadata,
+    seedRatio,
+    seedTime,
+    selectFile,
+    split,
+    sshHostKeyMd,
+    streamPieceSelector,
+    timeout,
+    uriSelector,
+    useHead,
+    userAgent,
+  ]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2InputFileOption &&
+            allProxy == other.allProxy &&
+            allProxyPasswd == other.allProxyPasswd &&
+            allProxyUser == other.allProxyUser &&
+            allowOverwrite == other.allowOverwrite &&
+            allowPieceLengthChange == other.allowPieceLengthChange &&
+            alwaysResume == other.alwaysResume &&
+            asyncDns == other.asyncDns &&
+            autoFileRenaming == other.autoFileRenaming &&
+            btEnableHookAfterHashCheck == other.btEnableHookAfterHashCheck &&
+            btEnableLpd == other.btEnableLpd &&
+            btExcludeTracker == other.btExcludeTracker &&
+            btExternalIP == other.btExternalIP &&
+            btForceEncryption == other.btForceEncryption &&
+            btHashCheckSeed == other.btHashCheckSeed &&
+            btLoadSavedMetadata == other.btLoadSavedMetadata &&
+            btMaxPeers == other.btMaxPeers &&
+            btMetadataOnly == other.btMetadataOnly &&
+            btMinCryptoLevel == other.btMinCryptoLevel &&
+            btPrioritizePiece == other.btPrioritizePiece &&
+            btRemoveUnselectedFile == other.btRemoveUnselectedFile &&
+            btRequestPeerSpeedLimit == other.btRequestPeerSpeedLimit &&
+            btRequireCrypto == other.btRequireCrypto &&
+            btSaveMetadata == other.btSaveMetadata &&
+            btSeedUnverified == other.btSeedUnverified &&
+            btStopTimeout == other.btStopTimeout &&
+            btTracker == other.btTracker &&
+            btTrackerConnectTimeout == other.btTrackerConnectTimeout &&
+            btTrackerInterval == other.btTrackerInterval &&
+            btTrackerTimeout == other.btTrackerTimeout &&
+            checkIntegrity == other.checkIntegrity &&
+            checksum == other.checksum &&
+            conditionalGet == other.conditionalGet &&
+            connectTimeout == other.connectTimeout &&
+            contentDispositionDefaultUtf8 ==
+                other.contentDispositionDefaultUtf8 &&
+            aria2Continue == other.aria2Continue &&
+            dir == other.dir &&
+            dryRun == other.dryRun &&
+            enableHttpKeepAlive == other.enableHttpKeepAlive &&
+            enableHttpPipelining == other.enableHttpPipelining &&
+            enableMmap == other.enableMmap &&
+            enablePeerExchange == other.enablePeerExchange &&
+            fileAllocation == other.fileAllocation &&
+            followMetalink == other.followMetalink &&
+            followTorrent == other.followTorrent &&
+            forceSave == other.forceSave &&
+            ftpPasswd == other.ftpPasswd &&
+            ftpPasv == other.ftpPasv &&
+            ftpProxy == other.ftpProxy &&
+            ftpProxyPasswd == other.ftpProxyPasswd &&
+            ftpProxyUser == other.ftpProxyUser &&
+            ftpReuseConnection == other.ftpReuseConnection &&
+            ftpType == other.ftpType &&
+            ftpUser == other.ftpUser &&
+            gid == other.gid &&
+            hashCheckOnly == other.hashCheckOnly &&
+            header == other.header &&
+            httpAcceptGzip == other.httpAcceptGzip &&
+            httpAuthChallenge == other.httpAuthChallenge &&
+            httpNoCache == other.httpNoCache &&
+            httpPasswd == other.httpPasswd &&
+            httpProxy == other.httpProxy &&
+            httpProxyPasswd == other.httpProxyPasswd &&
+            httpProxyUser == other.httpProxyUser &&
+            httpUser == other.httpUser &&
+            httpsProxy == other.httpsProxy &&
+            httpsProxyPasswd == other.httpsProxyPasswd &&
+            httpsProxyUser == other.httpsProxyUser &&
+            indexOut == other.indexOut &&
+            lowestSpeedLimit == other.lowestSpeedLimit &&
+            maxConnectionPerServer == other.maxConnectionPerServer &&
+            maxDownloadLimit == other.maxDownloadLimit &&
+            maxFileNotFound == other.maxFileNotFound &&
+            maxMmapLimit == other.maxMmapLimit &&
+            maxResumeFailureTries == other.maxResumeFailureTries &&
+            maxTries == other.maxTries &&
+            maxUploadLimit == other.maxUploadLimit &&
+            metalinkBaseUri == other.metalinkBaseUri &&
+            metalinkEnableUniqueProtocol ==
+                other.metalinkEnableUniqueProtocol &&
+            metalinkLanguage == other.metalinkLanguage &&
+            metalinkLocation == other.metalinkLocation &&
+            metalinkOS == other.metalinkOS &&
+            metalinkPreferredProtocol == other.metalinkPreferredProtocol &&
+            metalinkVersion == other.metalinkVersion &&
+            minSplitSize == other.minSplitSize &&
+            noFileAllocationLimit == other.noFileAllocationLimit &&
+            noNetrc == other.noNetrc &&
+            noProxy == other.noProxy &&
+            out == other.out &&
+            parameterizedUri == other.parameterizedUri &&
+            pause == other.pause &&
+            pauseMetadata == other.pauseMetadata &&
+            pieceLength == other.pieceLength &&
+            proxyMethod == other.proxyMethod &&
+            realtimeChunkChecksum == other.realtimeChunkChecksum &&
+            referer == other.referer &&
+            remoteTime == other.remoteTime &&
+            removeControlFile == other.removeControlFile &&
+            retryWait == other.retryWait &&
+            reuseUri == other.reuseUri &&
+            rpcSaveUploadMetadata == other.rpcSaveUploadMetadata &&
+            seedRatio == other.seedRatio &&
+            seedTime == other.seedTime &&
+            selectFile == other.selectFile &&
+            split == other.split &&
+            sshHostKeyMd == other.sshHostKeyMd &&
+            streamPieceSelector == other.streamPieceSelector &&
+            timeout == other.timeout &&
+            uriSelector == other.uriSelector &&
+            useHead == other.useHead &&
+            userAgent == other.userAgent);
+  }
 }
 
 class Aria2LinkedServerInfo {
@@ -1155,6 +1443,18 @@ class Aria2LinkedServerInfo {
         currentUri: map['currentUri'],
         downloadSpeed: int.parse(map['downloadSpeed']),
       );
+
+  @override
+  int get hashCode => Object.hashAll([uri, currentUri, downloadSpeed]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2LinkedServerInfo &&
+            uri == other.uri &&
+            currentUri == other.currentUri &&
+            downloadSpeed == other.downloadSpeed);
+  }
 }
 
 class Aria2Method {
@@ -1167,9 +1467,20 @@ class Aria2Method {
   String toString() {
     return 'Aria2Method(methodName: ${methodName.alias}, params: $params)';
   }
+
+  @override
+  int get hashCode => Object.hashAll([methodName, params]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2Method &&
+            methodName == other.methodName &&
+            params == other.params);
+  }
 }
 
-abstract class Aria2ParameterBuilder {
+sealed class Aria2ParameterBuilder {
   const Aria2ParameterBuilder();
 
   factory Aria2ParameterBuilder.empty() => const _Aria2EmptyParameterBuilder();
@@ -1200,6 +1511,14 @@ class _Aria2EmptyParameterBuilder extends Aria2ParameterBuilder {
   List<dynamic> buildParamList([String? secret]) {
     return [if (secret != null) 'token:$secret'];
   }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) || (other is _Aria2EmptyParameterBuilder);
+  }
 }
 
 class _Aria2MultiCallParameterBuilder extends Aria2ParameterBuilder {
@@ -1222,6 +1541,15 @@ class _Aria2MultiCallParameterBuilder extends Aria2ParameterBuilder {
 
     return [result];
   }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is _Aria2MultiCallParameterBuilder && _value == other._value);
+  }
 }
 
 class _Aria2NormalParameterBuilder extends Aria2ParameterBuilder {
@@ -1235,5 +1563,14 @@ class _Aria2NormalParameterBuilder extends Aria2ParameterBuilder {
   @override
   List<dynamic> buildParamList([String? secret]) {
     return [if (secret != null) 'token:$secret', ..._value];
+  }
+
+  @override
+  int get hashCode => value.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is _Aria2NormalParameterBuilder && _value == other._value);
   }
 }

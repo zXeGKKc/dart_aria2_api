@@ -24,13 +24,21 @@ class Aria2BatchCallResponse {
     }
     return Aria2BatchCallResponse(responses);
   }
+
+  @override
+  int get hashCode => responses.hashCode;
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2BatchCallResponse &&
+            listEquality.equals(responses, other.responses));
+  }
 }
 
 class Aria2MultiCallResponse {
   final String id;
   final ResultDart<List<ResultDart<List, Aria2Error>>, Aria2Error> result;
-
-  List<ResultDart<List, Aria2Error>>? get responses => result.getOrNull();
 
   const Aria2MultiCallResponse({required this.id, required this.result});
 
@@ -38,13 +46,53 @@ class Aria2MultiCallResponse {
     Aria2Method method,
     Map<String, dynamic> json,
   ) {
+    Aria2MultiCallResponse buildResponse(
+      Aria2Method method,
+      String id,
+      List data,
+    ) {
+      dynamic buildInner(Aria2Method method, dynamic inner) {
+        switch (inner) {
+          case List i:
+            final result = <Aria2Result>[];
+            for (final e in i) {
+              final handle = Aria2Result.build(method, e);
+              result.add(handle);
+            }
+            return result;
+          case _:
+            final handle = Aria2Result.build(method, inner);
+            return handle;
+        }
+      }
+
+      final params = method.params.value as List<Aria2Method>;
+      final map = Map.fromIterables(params, data);
+      final result = <ResultDart<List, Aria2Error>>[];
+      for (final i in map.entries) {
+        final key = i.key;
+        final value = i.value;
+        if (value is Map<String, dynamic>) {
+          result.add(Aria2Error.fromJson(value).toFailure());
+        } else if (value is List) {
+          result.add(
+            value.map((inner) => buildInner(key, inner)).toList().toSuccess(),
+          );
+        } else {
+          throw FormatException(invalidJsonMessage, value);
+        }
+      }
+
+      return Aria2MultiCallResponse(id: id, result: result.toSuccess());
+    }
+
     final id = json['id']?.toString();
     if (id == null) {
       throw const FormatException(missingIdMessage);
     }
 
     return switch (json) {
-      {'result': final resultData} => _buildResponse(method, id, resultData),
+      {'result': final resultData} => buildResponse(method, id, resultData),
       {'error': final errorData} => Aria2MultiCallResponse(
         id: id,
         result: Aria2Error.fromJson(errorData).toFailure(),
@@ -53,44 +101,15 @@ class Aria2MultiCallResponse {
     };
   }
 
-  static Aria2MultiCallResponse _buildResponse(
-    Aria2Method method,
-    String id,
-    List data,
-  ) {
-    dynamic buildInner(Aria2Method method, dynamic inner) {
-      switch (inner) {
-        case List i:
-          final result = <Aria2Result>[];
-          for (final e in i) {
-            final handle = Aria2Result.build(method, e);
-            result.add(handle);
-          }
-          return result;
-        case _:
-          final handle = Aria2Result.build(method, inner);
-          return handle;
-      }
-    }
+  @override
+  int get hashCode => Object.hashAll([id, result]);
 
-    final params = method.params.value as List<Aria2Method>;
-    final map = Map.fromIterables(params, data);
-    final result = <ResultDart<List, Aria2Error>>[];
-    for (final i in map.entries) {
-      final key = i.key;
-      final value = i.value;
-      if (value is Map<String, dynamic>) {
-        result.add(Aria2Error.fromJson(value).toFailure());
-      } else if (value is List) {
-        result.add(
-          value.map((inner) => buildInner(key, inner)).toList().toSuccess(),
-        );
-      } else {
-        throw FormatException(invalidJsonMessage, value);
-      }
-    }
-
-    return Aria2MultiCallResponse(id: id, result: result.toSuccess());
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2MultiCallResponse &&
+            id == other.id &&
+            resultEquality.equals(result, other.result));
   }
 }
 
@@ -111,13 +130,26 @@ class Aria2Response<T extends Aria2Result> extends Aria2ResponseBase<T> {
     Aria2Method method,
     Map<String, dynamic> json,
   ) {
+    Aria2Response<T> buildResponse(
+      Aria2Method method,
+      String id,
+      dynamic data,
+    ) {
+      final builtData = Aria2Result.build(method, data);
+      if (builtData is T) {
+        return Aria2Response(id: id, result: builtData.toSuccess());
+      }
+
+      throw Exception(typeMismatchMessage(T, builtData));
+    }
+
     final id = json['id']?.toString();
     if (id == null) {
       throw const FormatException(missingIdMessage);
     }
 
     return switch (json) {
-      {'result': final resultData} => _buildResponse<T>(method, id, resultData),
+      {'result': final resultData} => buildResponse(method, id, resultData),
       {'error': final errorData} => Aria2Response(
         id: id,
         result: Aria2Error.fromJson(errorData).toFailure(),
@@ -126,17 +158,15 @@ class Aria2Response<T extends Aria2Result> extends Aria2ResponseBase<T> {
     };
   }
 
-  static Aria2Response<T> _buildResponse<T extends Aria2Result>(
-    Aria2Method method,
-    String id,
-    dynamic data,
-  ) {
-    final builtData = Aria2Result.build(method, data);
-    if (builtData is T) {
-      return Aria2Response(id: id, result: builtData.toSuccess());
-    }
+  @override
+  int get hashCode => Object.hashAll([id, result]);
 
-    throw Exception(typeMismatchMessage(T, builtData));
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2Response &&
+            id == other.id &&
+            resultEquality.equals(result, other.result));
   }
 }
 
@@ -152,13 +182,31 @@ class Aria2ListResponse<T extends Aria2Result>
     Aria2Method method,
     Map<String, dynamic> json,
   ) {
+    Aria2ListResponse<T> buildResponse(
+      Aria2Method method,
+      String id,
+      List data,
+    ) {
+      final builtData = <T>[];
+      for (final i in data) {
+        final result = Aria2Result.build(method, i);
+        if (result is T) {
+          builtData.add(result);
+        } else {
+          throw Exception(typeMismatchMessage(T, result));
+        }
+      }
+
+      return Aria2ListResponse(id: id, result: builtData.cast<T>().toSuccess());
+    }
+
     final id = json['id']?.toString();
     if (id == null) {
       throw const FormatException(missingIdMessage);
     }
 
     return switch (json) {
-      {'result': final resultData} => _buildResponse<T>(method, id, resultData),
+      {'result': final resultData} => buildResponse(method, id, resultData),
       {'error': final errorData} => Aria2ListResponse(
         id: id,
         result: Aria2Error.fromJson(errorData).toFailure(),
@@ -167,22 +215,15 @@ class Aria2ListResponse<T extends Aria2Result>
     };
   }
 
-  static Aria2ListResponse<T> _buildResponse<T extends Aria2Result>(
-    Aria2Method method,
-    String id,
-    List data,
-  ) {
-    final builtData = <T>[];
-    for (final i in data) {
-      final result = Aria2Result.build(method, i);
-      if (result is T) {
-        builtData.add(result);
-      } else {
-        throw Exception(typeMismatchMessage(T, result));
-      }
-    }
+  @override
+  int get hashCode => Object.hashAll([id, result]);
 
-    return Aria2ListResponse(id: id, result: builtData.cast<T>().toSuccess());
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2ListResponse &&
+            id == other.id &&
+            resultEquality.equals(result, other.result));
   }
 }
 
@@ -197,7 +238,9 @@ class Aria2Notification {
       final data = json['params'] as List<Map<String, dynamic>>;
       return Aria2Notification(
         method: Aria2NotificationName.values.byAlias(json['method']),
-        data: data.map((e) => Aria2NotificationObject.fromJson(e)).toList(),
+        data: data
+            .map((e) => Aria2NotificationObject.fromJson(e))
+            .toList(growable: false),
       );
     }
 
@@ -210,5 +253,16 @@ class Aria2Notification {
           ..writeAll(['method: $method', 'data: $data'], ', ')
           ..write(')'))
         .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([method, data]);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other is Aria2Notification &&
+            method == other.method &&
+            listEquality.equals(data, other.data));
   }
 }

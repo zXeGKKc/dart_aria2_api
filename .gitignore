@@ -8,3 +8,6 @@ pubspec.lock
 
 test/tmp
 .vscode
+
+# FVM Version Cache
+.fvm/

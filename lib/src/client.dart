@@ -42,7 +42,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.add_torrent}
@@ -68,7 +68,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.add_uri}
@@ -87,7 +87,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   AsyncResult<Aria2BatchCallResponse> batchCall(List<Aria2Method> methods);
@@ -102,7 +102,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.change_option}
@@ -113,7 +113,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.change_position}
@@ -128,7 +128,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.change_uri}
@@ -151,7 +151,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   // It should only be overridden when a long-lived connection needs to be created.
@@ -165,7 +165,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.force_pause_all}
@@ -176,7 +176,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.force_remove}
@@ -187,7 +187,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.force_shutdown}
@@ -198,7 +198,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_files}
@@ -209,7 +209,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_global_option}
@@ -220,7 +220,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_global_stat}
@@ -231,7 +231,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_option}
@@ -242,7 +242,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_peers}
@@ -253,7 +253,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_servers}
@@ -264,7 +264,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_session_info}
@@ -275,7 +275,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_uris}
@@ -286,7 +286,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.get_version}
@@ -297,7 +297,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.list_methods}
@@ -308,7 +308,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.list_notifications}
@@ -319,7 +319,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.multicall}
@@ -333,7 +333,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.pause_all}
@@ -344,7 +344,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.purge_download_result}
@@ -355,7 +355,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.remove}
@@ -366,7 +366,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.remove_download_result}
@@ -377,7 +377,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.save_session}
@@ -388,7 +388,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.shutdown}
@@ -399,7 +399,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.tell_active}
@@ -412,7 +412,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.tell_status}
@@ -426,7 +426,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.tell_stopped}
@@ -441,7 +441,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.tell_waiting}
@@ -456,7 +456,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2ListResponse.fromJson(method, json));
+    )).flatMap((json) => Aria2ListResponse.wrap(method, json));
   }
 
   /// {@macro aria2_api.unpause}
@@ -467,7 +467,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 
   /// {@macro aria2_api.unpause_all}
@@ -478,7 +478,7 @@ sealed class Aria2Client {
     );
     return (await call(
       method,
-    )).map((json) => Aria2Response.fromJson(method, json));
+    )).flatMap((json) => Aria2Response.wrap(method, json));
   }
 }
 
@@ -587,8 +587,7 @@ class Aria2HttpClient extends Aria2Client {
           break;
       }
       final json = jsonDecode(httpResponse.body);
-      final response = Aria2MultiCallResponse.fromJson(method, json);
-      return response.toSuccess();
+      return Aria2MultiCallResponse.fromJson(method, json).toSuccess();
     } on Exception catch (e) {
       return Failure(e);
     }
@@ -737,6 +736,7 @@ class Aria2WebSocketClient extends Aria2Client {
     _pending[id] = _Aria2WebSocketPacket(method, completer);
     final request = _buildRequest(id, method);
     _channel.sink.add(jsonEncode(request));
+
     try {
       return Aria2MultiCallResponse.fromJson(
         method,
@@ -800,7 +800,11 @@ class Aria2WebSocketClient extends Aria2Client {
       final packet = _pending.remove(json['id']);
       if (packet != null) packet.complete(json);
     } else if (json.containsKey('method')) {
-      _notificationController.add(Aria2Notification.fromJson(json));
+      try {
+        _notificationController.add(Aria2Notification.fromJson(json));
+      } on Exception catch (e) {
+        _notificationController.addError(e);
+      }
     }
   }
 

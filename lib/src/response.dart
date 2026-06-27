@@ -158,6 +158,17 @@ class Aria2Response<T extends Aria2Result> extends Aria2ResponseBase<T> {
     };
   }
 
+  static Result<Aria2Response<T>> wrap<T extends Aria2Result>(
+    Aria2Method method,
+    Map<String, dynamic> json,
+  ) {
+    try {
+      return Success(Aria2Response<T>.fromJson(method, json));
+    } on Exception catch (e) {
+      return Failure(e);
+    }
+  }
+
   @override
   int get hashCode => Object.hashAll([id, result]);
 
@@ -213,6 +224,17 @@ class Aria2ListResponse<T extends Aria2Result>
       ),
       _ => throw FormatException(invalidJsonMessage, json),
     };
+  }
+
+  static Result<Aria2ListResponse<T>> wrap<T extends Aria2Result>(
+    Aria2Method method,
+    Map<String, dynamic> json,
+  ) {
+    try {
+      return Success(Aria2ListResponse<T>.fromJson(method, json));
+    } on Exception catch (e) {
+      return Failure(e);
+    }
   }
 
   @override
